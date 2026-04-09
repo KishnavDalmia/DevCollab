@@ -5,11 +5,11 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB  from './config/connection.js';
 import sessionConfig  from './config/session.js';
-import authRoutes from './routes/auth.js';
-import { isAuthenticated } from './middleware/auth.js';
+import authRoutes from './routes/authRoute.js';
+import { isAuthenticated } from './middleware/authMiddleware.js';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.path}`);

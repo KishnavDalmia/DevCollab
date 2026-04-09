@@ -16,7 +16,7 @@ export const login = async (req,res) =>{
         const {email,password} = req.body;
         const user = await User.findOne({email});
         if(!user) return res.status(401).json({message:"Invalid Credentials"});
-        const isValidPass = await user.comparePassword(password);
+        const isValidPass = await bcrypt.compare(password, user.password);
         if(!isValidPass) return res.status(401).json({message:"Invalid Credentials"});
         req.session.userId = user._id;
         req.session.username = user.username;
@@ -32,15 +32,15 @@ export const register = async (req,res) => {
         const {username,name,email,password} = req.body;
         const existingUser = await User.findOne({$or: [{email},{username}]});
         if(existingUser) return res.status(400).json({message: "User already exists"});
-        const user = new User({name,username,email,password});
+        const user = new User({name,username,email,password: await bcrypt.hash(password,10)});
         await user.save();
         req.session.userId = user._id;
         req.session.username = user.username;
         req.session.save((err) => {
             if(err) return res.status(500).json({message: "Session error"});
-            res.status(201).json({message:"User registered successfully", user: {id: user._id, username: user.username, name: user.name, email: user.email}});
+            return res.status(201).json({message:"User registered successfully", user: {id: user._id, username: user.username, name: user.name, email: user.email}});
         });
-        //res.status(201).json({message:"User registered successfully",user: {id: user._id, username: user.username, name: user.name, email: user.email}});
+       //res.status(201).json({message:"User registered successfully",user: {id: user._id, username: user.username, name: user.name, email: user.email}});
     }catch(err){
         console.log(err.message);
         res.status(500).json({message: "Server error"});

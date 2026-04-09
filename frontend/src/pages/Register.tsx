@@ -13,7 +13,7 @@ const Register = () => {
   const navigate=useNavigate();
   const {register}=useAuth();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const result = await register(name,username,email,password);

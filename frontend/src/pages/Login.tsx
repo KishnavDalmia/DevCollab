@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const {login} = useAuth();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setLoading(true);
