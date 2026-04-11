@@ -33,16 +33,17 @@ export const register = async (req,res) => {
         const existingUser = await User.findOne({$or: [{email},{username}]});
         if(existingUser) return res.status(400).json({message: "User already exists"});
         const user = new User({name,username,email,password: await bcrypt.hash(password,10)});
+        console.log(user);
         await user.save();
         req.session.userId = user._id;
         req.session.username = user.username;
         req.session.save((err) => {
-            if(err) return res.status(500).json({message: "Session error"});
+            if(err) return res.status(500).json({message: err.message || "Could not save session"});
             return res.status(201).json({message:"User registered successfully", user: {id: user._id, username: user.username, name: user.name, email: user.email}});
         });
-       //res.status(201).json({message:"User registered successfully",user: {id: user._id, username: user.username, name: user.name, email: user.email}});
+      
     }catch(err){
-        console.log(err.message);
+        console.log(err.data.message);
         res.status(500).json({message: "Server error"});
     }
 }

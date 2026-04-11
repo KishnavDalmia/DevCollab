@@ -1,8 +1,8 @@
 import {Routes, Route} from 'react-router-dom'
-import Home from './pages/Home.tsx'
-import Login from './pages/Login.tsx'
-import Dashboard from './pages/Dashboard.tsx'
-import Register from './pages/Register.tsx'
+import Home from './pages/Home.jsx'
+import Login from './pages/Login.jsx'
+import Dashboard from './pages/Dashboard.jsx'
+import Register from './pages/Register.jsx'
 function App() {
 
   return (

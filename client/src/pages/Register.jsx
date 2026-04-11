@@ -1,6 +1,6 @@
-import {useState, type ChangeEvent} from 'react'
-import { useAuth } from '../context/AuthContext'
+import {useState} from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const Register = () => {
   const [name,setName] = useState('');
@@ -11,16 +11,15 @@ const Register = () => {
   const [error,setError] = useState('');
   
   const navigate=useNavigate();
-  const {register}=useAuth();
 
-  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const result = await register(name,username,email,password);
-    if(result.success){
+    const result = await axios.post('http://localhost:3000/api/auth/register', { name, username, email, password });
+    if(result.status === 201){
         navigate('/dashboard');
     }else{
-        setError(result.message || 'An Error Occurred');
+        setError(result.data.message || 'An Error Occurred');
     }
     setLoading(false);
   } 
@@ -37,11 +36,11 @@ const Register = () => {
           <form onSubmit={handleSubmit} className='flex flex-col justify-start my-5 w-100 p gap-5'>
             <div className='flex flex-col gap-2'>
               <label htmlFor="name">Name</label>
-              <input type="text" name="name" value={name} id="name" onChange= {(e: ChangeEvent<HTMLInputElement>) =>{setName(e.target.value)}} className='bg-neutral-700 text-white rounded-md h-8' />
+              <input type="text" name="name" value={name} id="name" onChange= {(e) =>{setName(e.target.value)}} className='bg-neutral-700 text-white rounded-md h-8' />
             </div>
             <div className='flex flex-col gap-2'>
               <label htmlFor="email">Username</label>
-              <input type="text" name="username" value={username} id="username" onChange= {(e: ChangeEvent<HTMLInputElement>) =>{setUsername(e.target.value)}} className='bg-neutral-700 text-white rounded-md h-8' />
+              <input type="text" name="username" value={username} id="username" onChange= {(e) =>{setUsername(e.target.value)}} className='bg-neutral-700 text-white rounded-md h-8' />
             </div>
             <div className='flex flex-col gap-2'>
               <label htmlFor="email">Email</label>

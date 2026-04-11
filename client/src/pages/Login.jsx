@@ -1,6 +1,6 @@
-import {useState, type ChangeEvent} from 'react';
-import {useAuth} from '../context/AuthContext'
+import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
   const [email,setEmail] = useState('');
@@ -9,14 +9,13 @@ const Login = () => {
   const [loading,setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const {login} = useAuth();
 
-  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const result = await login(email,password);
-    if(result.success){
+    const result = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+    if(result.status === 200){
       navigate('/dashboard');
     }else{
       setError(result.message || 'An error occurred' );
@@ -37,11 +36,11 @@ const Login = () => {
           <form onSubmit={handleSubmit} className='flex flex-col justify-start my-5 w-100 p gap-5'>
             <div className='flex flex-col gap-2'>
               <label htmlFor="email">Email</label>
-              <input type="text" name="email" value={email} id="email" onChange= {(e : ChangeEvent<HTMLInputElement>) =>{setEmail(e.target.value)}} className='bg-neutral-700 text-white rounded-md h-8' />
+              <input type="text" name="email" value={email} id="email" onChange= {(e) =>{setEmail(e.target.value)}} className='bg-neutral-700 text-white rounded-md h-8' />
             </div>
             <div className='flex flex-col gap-2'>
               <label htmlFor="password">Password</label>
-              <input type="password" name="password" value={password} id="password" onChange = {(e: ChangeEvent<HTMLInputElement>)=>setPassword(e.target.value)} className='bg-neutral-700 text-white rounded-md h-8'/>
+              <input type="password" name="password" value={password} id="password" onChange = {(e)=>setPassword(e.target.value)} className='bg-neutral-700 text-white rounded-md h-8'/>
             </div>          
             {error && <p>{error}</p>}
             <button type="submit" className='text-center bg-white text-black hover:bg-neutral-200 rounded-md shadow-md hover:shadow-xl font-medium py-2 mt-3' disabled={loading}>
